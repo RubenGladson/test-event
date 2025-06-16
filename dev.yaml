@@ -1,0 +1,358 @@
+http:
+  salesforce:
+    oauth:
+      host: ""
+    port: ""
+    timeout:
+      customer: ""
+      order: ""
+      price: ""
+      documentAvailability: ""
+      sanctions: ""
+  docusign:
+    host: ""
+    port: ""
+    key:
+      alias: "1"
+      id: "rsa"
+      name: "test.p12"
+    oauth:
+      host: ""
+      port: ""
+    folder:
+      vehicleConditionReport: ""
+    timeout: ""
+  operations:
+    host: ""
+    port: "443"
+    timeout: ""
+  poms:
+    host: ""
+    port: "443"
+    oauth:
+      host: ""
+      port: "443"
+    timeout: ""
+  analytics:
+    host: ""
+    port: "443"
+    basePath: ""
+    timeout: ""
+  docHub:
+    host: ""
+    port: "443"
+    responseTimeout: "30000"
+  psid:
+    host: ""
+    port: ""
+    responseTimeout: ""
+  volvoCars:
+    host: ""
+    port: "443"
+    responseTimeout: ""
+  tacdis:
+    host: ""
+    port: "443"
+  activix:
+    host: ""
+    port: "443"
+    tokenUrl: "https://"
+    timeout: "30000"
+  psim:
+    host: ""
+    port: "443"
+    timeout: "30000"
+  postNord:
+    host: ""
+    port: "443"
+  prti:
+    host: ""
+    port: "443"
+    tokenUrl: "https://"
+    tokenScope: "https://"
+    imageUrlHost: "https://test.com/"
+  coo:
+    host: ""
+    port: "443"
+    timeout: "30000"
+  vehicleApi:
+    host: ""
+    port: "443"
+    merchantId: ""
+    responseTimeout:
+      medium: ""
+      high: ""
+  gigp:
+    host: ""
+    port: "443"
+    scope: "gcs:service"
+    timeout: ""
+  google:
+    host: ""
+    port: "443"
+  navex:
+    host: ""
+    port: "443"
+    responseTimeout: "30000"
+  consentService:
+    host: ""
+    port: "443"
+    timeout: "30000"
+  pira:
+    host: "io"
+    port: "443"
+    responseTimeout: ""
+  orion:
+    host: ""
+    createOrder:
+      path: ""
+      queryParams: "m"
+    cancelOrder:
+      path: ""
+    getAssignments:
+      path: ""
+    workshopChange:
+      path: ""
+    po:
+      path: ""
+  marketingCloud:
+    host: ""
+    port: "443"
+    oauth:
+      tokenUrl: "https://"
+  pegasys:
+    plm:
+      host: ""
+      port: "443"
+      basePath: ""
+      timeout: ""
+      spQueryParam: ""
+    bom:
+      host: ""
+      port: ""
+      basePath: ""
+      timeout: ""
+      spQueryParam: ""
+    partMaster:
+      host: ""
+      port: ""
+      basePath: ""
+      timeout: ""
+      spQueryParam: ""
+  sendgrid:
+    host: ""
+    port: "443"
+  preConfigured:
+    host: ""
+    port: "443"
+    tokenUrl: "https://"
+    timeout: ""
+  carsCom:
+    host: ""
+    port: "443"
+    basePath: ""
+    timeout: ""
+
+aws:
+  accountNumber: ""
+  region:
+    euNorth: ""
+  sns:
+    baseArn: ""
+    topicArn:
+      transportServicesWheelTransportBooking: ""
+      ewaFaultReport: ""
+      preconfigListings: ""
+  sqs:
+    baseUrl: ""
+    baseArn: ""
+    testQueueArn: ""
+    queueUrl:
+      pomsSfdcOrder: ""
+      pomsSfdcPrice: ""
+      pomsDbiOrder: ""
+      pomsTacdisOrder: ""
+      pomsActivixOrder: ""
+      pomsPostNordWheelTransportBooking: ""
+      pomsSfdcOrderDeliveryStatus: ""
+      sfdcVccCdbCustomer: ""
+      sfdcActivixCustomer: ""
+      sfdcVccCdbCustomerDelete: ""
+      sfdcDocHubContract: ""
+      sfdcDocHubDocumentUpload: ""
+      sfdcVccCdbCustomerMerge: ""
+      sfdcPsidInviteCustomer: ""
+      sfdcActivixTestDrive: ""
+      sfdcActivixCase: ""
+      sfdcActivixMarketingCloudEmail: ""
+      sfdcNavexSanctionCheck: ""
+      sfdcVerbalConsent: ""
+      vccCdbSfdcCustomer: ""
+      vccRdmSfdcCommercialPartner: ""
+      vccVistaCoxOrder: ""
+      vccVistaDnaOrderEvent: ""
+      vccTmsDnaRoutedOrder: ""
+      vccTmsDnaOrderStatus: ""
+      vdmsSfdcPrimaryDriver: ""
+      vdmsSfdcPerformanceOptimization: ""
+      vdmsSfdcOwnerChange: ""
+      vdmsSfdcServiceHistory: ""
+      vdmsSfdcMarket: ""
+      voumsSfdcRegistration: ""
+      docHubSfdcDocumentCallback: ""
+      docHubSfdcCreditStatus: ""
+      docHubSfdcContractReportStatus: ""
+      docHubSfdcDocumentAvailability: ""
+      docHubDocusignVehicleConditionReport: ""
+      pomsAldDeHandoverProtocol: ""
+      pomsAldNlHandoverProtocol: ""
+      ownershipSfdcOwnerChange: ""
+      prtiGmcVehicleAds: ""
+      prtiCarsComVehicleInventory: ""
+      prtiS3PreOwnedSiriusXM: ""
+      prtiAtgVehicleAds: ""
+      plmGigpPartMaster: ""
+      plmGigpFeatureDictionary: ""
+      plmGigpBomData: ""
+      plmGigpPartBreakdownStructure: ""
+      plmGigpProductVariantData: ""
+      plmBillOfConfigToVccEwa: ""
+      plmPegasysPartBreakdownStructure: ""
+      preConfigTopicListings: ""
+      preConfigCarsComListings: ""
+      sfdcCooChangeOwnership: ""
+      partInfoToPSIM: ""
+      sfdcGeolocation: ""
+      salesOfServiceSfdcSubscriptionChange: ""
+      dealerComEventLead: ""
+      amConnectSfdcWarranties: ""
+      amConnectSfdcRetailDeliveryDate: ""
+      amConnectSfdcMnoss: ""
+      ewaPiraFaultReport: ""
+      womOrionOrderCreateEvents: ""
+      womOrionWorkOrderCancellation: ""
+      womOrionWorkshopChange: ""
+      womOrionWorkOrderPOUpdate: ""
+      amConnectSfdcPerformedClaims: ""
+      amConnectSfdcSoftwareBaseline: ""
+      dotComSfdcCreatedUpdatedConfiguration: ""
+      dotComSfdcDeletedExpiredConfiguration: ""
+      sfdcMarketingCloudDsrrDeletion: ""
+      salesOfServiceSfdcMaintenance: ""
+      sfdcCooChangeVehicleInfo: ""
+      dealerComEventLeadTrigger: ""
+      cloudwatchSendgridAlarmNotification: ""
+      sfdcPsidCustomerUpdate: ""
+      sfdcPsidCustomer: ""
+      preConfigDealerComListings: ""
+      plmPegasysBom: ""
+      plmPegasysPartMaster: ""
+    visibilityTimeout:
+      short: ""
+      medium: ""
+      long: ""
+  s3:
+    bucket:
+      commonsBucket: ""
+  assumedRole:
+    internal: ""
+
+azure:
+  eventHub:
+    vira:
+      name: ""
+      namespace: ""
+
+grip:
+  url: ""
+  baseUrl: ""
+  timeout:
+    upsertCustomer: "1"
+    mergeCustomer: "1"
+  maxRetries:
+    upsertCustomer: "0"
+    mergeCustomer: "0"
+  millisBetween:
+    upsertCustomer: "10000"
+    mergeCustomer: "10000"
+
+untilSuccessful:
+  fast:
+    maxRetries: "2"
+    millisBetween: "0"
+  slow:
+    maxRetries: "2"
+    millisBetween: "0"
+  orderDeliveryStatus:
+    maxRetries: "2"
+    millisBetween: "0"
+
+sftp:
+  dbi:
+    host: ""
+    port: "22"
+    workingDir: "/DevTest/model"
+    timeout: "10"
+  carsCom:
+    host: ""
+    port: "22"
+    workingDir: ""
+  cox:
+    host: ""
+    port: "22"
+    workingDir: ""
+  ald:
+    host: ""
+    port: "22"
+    workingDir: ""
+    keyName: ""
+  dealerDotCom:
+    host: ""
+    port: "22"
+    workingDir: ""
+    path:
+      outbound: ""
+      inbound: ""
+
+workday:
+  baseUrl: ""
+  baseUrlQueue: ""
+  queue:
+    slowtrackInbound: ""
+
+mq:
+  vcc:
+    alias: ""
+    queueManager: ""
+    channelName: ""
+    port: ""
+    host: ""
+    cipherSuite: "SHA256"
+
+reconnectForever:
+  frequency: "30000"
+  blocking: "false"
+
+alertEnabled:
+  orderEventToActivix: "false"
+  customerEventToActivix: "false"
+  processCustomerEvent: "false"
+  salesforceCustomerEventToGrip: "false"
+  salesforceCustomerDeleteEventToGrip: "false"
+  faultReportToPira: "false"
+  dealerComEventLeadsToSQS: "false"
+  dealerComEventLeadsToSF: "false"
+  plm: "false"
+  wom: "false"
+
+maxRetryCount:
+  plm: "3"
+  wom: "3"
+
+cache:
+  token:
+    sanctions:
+      ttl: "7100"
+      expire: "1000"
+
+oauthTokenUrl: "https://"

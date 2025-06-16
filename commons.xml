@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ibm-mq="http://www.mulesoft.org/schema/mule/ibm-mq"
+      xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:os="http://www.mulesoft.org/schema/mule/os"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:sqs="http://www.mulesoft.org/schema/mule/sqs"
+      xmlns:sns="http://www.mulesoft.org/schema/mule/sns"
+      xmlns:s3="http://www.mulesoft.org/schema/mule/s3"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:sqs-custom="http://www.mulesoft.org/schema/mule/sqs-custom"
+      xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+      xmlns:kinesis-logger="http://www.mulesoft.org/schema/mule/kinesis-logger"
+      xmlns:aws-systems-manager-properties-provider="http://www.mulesoft.org/schema/mule/aws-systems-manager-properties-provider"
+      xmlns:workday="http://www.mulesoft.org/schema/mule/workday"
+      xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+      xmlns:alert="http://www.mulesoft.org/schema/mule/alert"
+      xmlns:oauth="http://www.mulesoft.org/schema/mule/oauth"
+      xmlns:crypto="http://www.mulesoft.org/schema/mule/crypto"
+      xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/workday http://www.mulesoft.org/schema/mule/workday/current/mule-workday.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/sqs http://www.mulesoft.org/schema/mule/sqs/current/mule-sqs.xsd
+http://www.mulesoft.org/schema/mule/sns http://www.mulesoft.org/schema/mule/sns/current/mule-sns.xsd
+http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/current/mule-s3.xsd
+http://www.mulesoft.org/schema/mule/sqs-custom http://www.mulesoft.org/schema/mule/sqs-custom/current/mule-sqs-custom.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/kinesis-logger http://www.mulesoft.org/schema/mule/kinesis-logger/current/mule-kinesis-logger.xsd
+http://www.mulesoft.org/schema/mule/aws-systems-manager-properties-provider http://www.mulesoft.org/schema/mule/aws-systems-manager-properties-provider/current/mule-aws-systems-manager-properties-provider.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/oauth http://www.mulesoft.org/schema/mule/oauth/current/mule-oauth.xsd
+http://www.mulesoft.org/schema/mule/crypto http://www.mulesoft.org/schema/mule/crypto/current/mule-crypto.xsd
+http://www.mulesoft.org/schema/mule/alert http://www.mulesoft.org/schema/mule/alert/current/mule-alert.xsd
+http://www.mulesoft.org/schema/mule/ibm-mq http://www.mulesoft.org/schema/mule/ibm-mq/current/mule-ibm-mq.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+    <configuration-properties file="properties/${env}.yaml"/>
+
+    <aws-systems-manager-properties-provider:config name="AWS_Systems_Manager_Properties_Provider_Config">
+        <aws-systems-manager-properties-provider:basic-connection awsRegion="${awssm.region}" accessKey="${awssm.accessKey}" secretKey="${awssm.secretKey}"/>
+    </aws-systems-manager-properties-provider:config>
+
+    <kinesis-logger:config name="Kinesis_Logger_Config" accessKey="${awssm::/kinesis/basic/access-key}" secretKey="${awssm::/kinesis/basic/secret-key}" region="${awssm::/kinesis/region}" streamName="${awssm::/kinesis/stream-name}"/>
+
+    <alert:config name="Alert_Config" region="${awssm.region}" accessKey="${awssm.accessKey}" secretKey="${awssm.secretKey}" sendGridHost="${http.sendgrid.host}" sendGridTokenUrl="${awssm::/source-events/sendgrid-api/oauth/token-url}" sendGridClientId="${awssm::/source-events/sendgrid-api/oauth/client-id}" sendGridClientSecret="${awssm::/source-events/sendgrid-api/oauth/client-secret}" sendGridScope="${awssm::/source-events/sendgrid-api/oauth/scope}"/>
+
+    <validation:config name="Validation_Config"/>
+
+    <os:object-store name="dealerId"/>
+
+     <sqs:config name="Amazon_Sqs_Configuration_Alerts">
+        <sqs:basic-connection accessKey="${awssm::/sqs/basic/access-key}"
+                              secretKey="${awssm::/sqs/basic/secret-key}"
+                              region="${aws.region.euNorth}"
+                              testQueueArn="${aws.sqs.testQueueArn}">
+            <reconnection>
+                <reconnect-forever frequency="${reconnectForever.frequency}" blocking="${reconnectForever.blocking}"/>
+            </reconnection>
+        </sqs:basic-connection>
+    </sqs:config>
+
+    <sqs:config name="Amazon_Sqs_Configuration_AmConnect_MNOSS">
+        <sqs:basic-connection accessKey="${awssm::/sqs/basic/access-key}"
+                              secretKey="${awssm::/sqs/basic/secret-key}"
+                              region="${aws.region.euNorth}"
+                              testQueueArn="${aws.sqs.testQueueArn}">
+            <reconnection>
+                <reconnect-forever frequency="${reconnectForever.frequency}" blocking="${reconnectForever.blocking}"/>
+            </reconnection>
+        </sqs:basic-connection>
+    </sqs:config>
+
+    <http:request-config name="Mule_Volvo_Cars_API_Config" responseTimeout="${http.volvoCars.responseTimeout}">
+        <http:request-connection host="${http.volvoCars.host}" port="${http.volvoCars.port}" protocol="HTTPS">
+            <reconnection>
+                <reconnect-forever frequency="${reconnectForever.frequency}" blocking="${reconnectForever.blocking}"/>
+            </reconnection>
+            <http:authentication>
+                <oauth:client-credentials-grant-type
+                        clientId="${awssm::/volvo-cars-api/source-events/oauth/client-id}"
+                        clientSecret="${awssm::/volvo-cars-api/source-events/oauth/client-secret}"
+                        scopes="${awssm::/volvo-cars-api/source-events/oauth/scope}"
+                        tokenUrl="${awssm::/volvo-cars-api/source-events/oauth/tokenUrl}"/>
+            </http:authentication>
+        </http:request-connection>
+    </http:request-config>
+
+    <sub-flow name="sendAlert">
+        <set-variable variableName="alertEnabled" value="#[vars.alertEnabled default false]"/>
+        <kinesis-logger:put-record-async level="INFO" message="#[output application/json --- {integration: vars.alertIntegration, errorMapping: vars.errorMapping, alertEnabled: vars.alertEnabled}]" category="com.polestar.source-events.sendAlert.#1" source="#[vars.flowSource]" destination="#[vars.flowDestination]" transactionId="#[vars.transactionId]" config-ref="Kinesis_Logger_Config"/>
+        <set-variable variableName="webhook" value="#[{'SFDC': '${awssm::/slack/webhook/integration-alerts-for-salesforce}','SFDC_NA': '${awssm::/slack/webhook/integration-alerts-for-salesforce-na}','PIS': '${awssm::/slack/webhook/integration-operations-alerts}','WOM': '${awssm::/slack/webhook/integration-alerts-for-wom-orion}'}[vars.errorMapping.target default '']]"/>
+        <set-variable variableName="alertEmail" value="#[if(vars.alertTarget == 'PLM') read('${awssm::/source-events/sendgrid-api/alert-email/plm}', 'json') else null]"/>
+
+        <choice>
+            <when expression="#[!isEmpty(vars.webhook)]">
+                <kinesis-logger:put-record-async level="INFO" message="#[output application/json --- {integration: vars.alertIntegration, errorMapping: vars.errorMapping, alertEnabled: vars.alertEnabled}]" category="com.polestar.source-events.sendAlert.#1" source="#[vars.flowSource]" destination="#[vars.flowDestination]" transactionId="#[vars.transactionId]" config-ref="Kinesis_Logger_Config"/>
+            </when>
+            <when expression="#[!isEmpty(vars.alertEmail)]">
+                <kinesis-logger:put-record-async level="INFO" message="#[output application/json --- {integration: vars.alertIntegration, errorMapping: vars.errorMapping, alertEnabled: vars.alertEnabled}]" category="com.polestar.source-events.sendAlert.#1" source="#[vars.flowSource]" destination="#[vars.flowDestination]" transactionId="#[vars.transactionId]" config-ref="Kinesis_Logger_Config"/>
+            </when>
+        </choice>
+        <choice>
+            <when expression="#[vars.errorMapping.deleteEvent]">
+                <sqs:delete-message config-ref="Amazon_Sqs_Configuration_Alerts" receiptHandle="#[vars.receiptHandle]" queueUrl="#[vars.queueUrl]"/>
+                <kinesis-logger:put-record-async level="INFO" message="Event deleted from queue" category="com.polestar.source-events.sendAlert.#3" source="#[vars.flowSource]" destination="#[vars.flowDestination]" transactionId="#[vars.transactionId]" config-ref="Kinesis_Logger_Config"/>
+            </when>
+            <otherwise>
+                <kinesis-logger:put-record-async level="INFO" message="Event moved to DLQ" category="com.polestar.source-events.sendAlert.#4" source="#[vars.flowSource]" destination="#[vars.flowDestination]" transactionId="#[vars.transactionId]" config-ref="Kinesis_Logger_Config"/>
+            </otherwise>
+        </choice>
+    </sub-flow>
+
+    <error-handler name="globalErrorHandler">
+        <on-error-propagate type="MULE:RETRY_EXHAUSTED">
+            <kinesis-logger:put-record-async level="WARN" message="#[payload]" dataMasking="#[vars.maskingList]" category="#['com.polestar.source-events.' ++ (vars.flowName default 'errorHandler') ++ '.#e3']" source="#[vars.flowSource]" destination="#[vars.flowDestination]" transactionId="#[vars.transactionId]" config-ref="Kinesis_Logger_Config"/>
+            <kinesis-logger:put-record-async level="ERROR" message="#[import readRetryError from modules::utils output json skipNullOn='everywhere' --- readRetryError(error)]" category="#['com.polestar.source-events.' ++ (vars.flowName default 'errorHandler') ++ '.#e4']" source="#[vars.flowSource]" destination="#[vars.flowDestination]" transactionId="#[vars.transactionId]" config-ref="Kinesis_Logger_Config"/>
+        </on-error-propagate>
+        <on-error-propagate>
+            <kinesis-logger:put-record-async level="WARN" message="#[payload]" dataMasking="#[vars.maskingList]" category="#['com.polestar.source-events.' ++ (vars.flowName default 'errorHandler') ++ '.#e1']" source="#[vars.flowSource]" destination="#[vars.flowDestination]" transactionId="#[vars.transactionId]" config-ref="Kinesis_Logger_Config"/>
+            <kinesis-logger:put-record-async level="ERROR" message="#[import update from dw::util::Values output application/json --- error update ['cause', 'stackTrace'] with '']" category="#['com.polestar.source-events.' ++ (vars.flowName default 'errorHandler') ++ '.#e2']" source="#[vars.flowSource]" destination="#[vars.flowDestination]" transactionId="#[vars.transactionId]" config-ref="Kinesis_Logger_Config"/>
+            <set-variable variableName="errorMapping" value="#[output application/json import responseErrorMapping from dwl::commons::alerts --- responseErrorMapping(error, vars)]"/>
+            <choice>
+                <when expression="#[!isEmpty(vars.errorMapping)]">
+                    <flow-ref name="sendAlert"/>
+                </when>
+            </choice>
+        </on-error-propagate>
+    </error-handler>
+</mule>
