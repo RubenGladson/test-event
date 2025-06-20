@@ -39,4 +39,35 @@ http://www.mulesoft.org/schema/mule/kinesis-logger http://www.mulesoft.org/schem
 
         <error-handler ref="globalErrorHandler"/>
     </flow>
+
+    <flow name="mnossUpdateToRuben">
+        <sqs:receivemessages config-ref="Amazon_Sqs_Configuration_AmConnect_MNOSS"
+                             queueUrl="${aws.sqs.queueUrl.amConnectRubenMnoss}"
+                             preserveMessages="true"
+                             visibilityTimeout="${aws.sqs.visibilityTimeout.short}"/>
+
+        <set-variable variableName="flowName" value="mnossUpdateToRuben"/>
+        <set-variable variableName="flowSource" value="amConnect"/>
+        <set-variable variableName="flowDestination" value="ruben"/>
+        <set-variable variableName="queueUrl" value="${aws.sqs.queueUrl.amConnectRubenMnoss}"/>
+        <set-variable variableName="alertIntegration" value="MNOSS updates from AMConnect to Ruben in ${env}"/>
+        <set-variable variableName="receiptHandle" value="#[attributes.'sqs.message.receipt.handle']"/>
+        <set-payload value="#[output json --- read(payload, 'json')]"/>
+        <kinesis-logger:put-record-async level="INFO" message="#[output json --- payload]" category="com.polestar.source-events.mnossUpdateToRuben.#1" source="#[vars.flowSource]" destination="#[vars.flowDestination]" transactionId="#[vars.transactionId]" config-ref="Kinesis_Logger_Config"/>
+
+        <set-payload value="#[${file::dwl/amconnect/mnoss-updates-to-salesforce.dwl}]"/>
+        <kinesis-logger:put-record-async level="INFO" message="#[output json --- payload]" category="com.polestar.source-events.mnossUpdateToRuben.#2" source="#[vars.flowSource]" destination="#[vars.flowDestination]" transactionId="#[vars.transactionId]" config-ref="Kinesis_Logger_Config"/>
+
+        <http:request config-ref="Mule_Salesforce_Oauth_API_Config" path="/polestar-product/vin/{vin}" method="PATCH">
+            <http:headers>#[{'transaction-id': vars.transactionId}]</http:headers>
+            <http:uri-params>#[{'vin': payload.vin}]</http:uri-params>
+        </http:request>
+        <kinesis-logger:put-record-async level="INFO" message="MNOSS Updates sent to Ruben" category="com.polestar.source-events.mnossUpdateToRuben.#3" source="#[vars.flowSource]" destination="#[vars.flowDestination]" transactionId="#[vars.transactionId]" config-ref="Kinesis_Logger_Config"/>
+
+        <sqs:delete-message config-ref="Amazon_Sqs_Configuration_AmConnect_MNOSS"
+                            receiptHandle="#[vars.receiptHandle]"
+                            queueUrl="#[vars.queueUrl]"/>
+
+        <error-handler ref="globalErrorHandler"/>
+    </flow>
 </mule>
